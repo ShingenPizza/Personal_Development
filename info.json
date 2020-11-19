@@ -1,0 +1,12 @@
+{
+  "name": "Personal_Development",
+  "version": "1.0.0",
+  "title": "Personal Development",
+  "description": "A mod that increases your skills the more you use them.",
+  "author": "Shingen",
+  "homepage": "https://github.com/ShingenPizza/Personal_Development",
+  "factorio_version": "1.0",
+  "dependencies": [
+    "base >= 1.0.0"
+  ]
+}
