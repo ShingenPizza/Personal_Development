@@ -11,6 +11,6 @@ Date: 2020-11-23
 
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.2
-Date: 2020-11-23
+Date: 2020-11-27
   Features:
     - Added commands to list and reset PD bonuses, as well as a setting to disable it.
