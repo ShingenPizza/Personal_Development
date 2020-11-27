@@ -1,24 +1,39 @@
 
 local divisor = 60
 
-function set_player_list(pi, val)
-    local pidiv = pi % divisor
-    if global.player_list[pidiv] == nil then
-        global.player_list[pidiv] = {}
-    end
-    global.player_list[pidiv][pi] = val
-end
-
 function set_default(set, key, default)
     if set[key] == nil then
         set[key] = default
     end
 end
 
+function set_player_list(pi, val)
+    local pidiv = pi % divisor
+    set_default(global.player_list, pidiv, {})
+    global.player_list[pidiv][pi] = val
+end
+
 -- setup --------------------------------------------------
 function on_init()
     global.warned = global.warned or {}
     global.players_waiting_for_update = global.players_waiting_for_update or {}
+
+    global.reach_current = global.reach_current or {}
+    global.reach_last = global.reach_last or {}
+    global.reach_changed_after_death = global.reach_changed_after_death or {}
+
+    global.mining_speed_current = global.mining_speed_current or {}
+    global.mining_speed_last = global.mining_speed_last or {}
+    global.mining_speed_changed_after_death = global.mining_speed_changed_after_death or {}
+    global.mining_speed_last_mined = global.mining_speed_last_mined or {}
+
+    global.crafting_speed_current = global.crafting_speed_current or {}
+    global.crafting_speed_last = global.crafting_speed_last or {}
+    global.crafting_speed_changed_after_death = global.crafting_speed_changed_after_death or {}
+
+    global.health_current = global.health_current or {}
+    global.health_last = global.health_last or {}
+    global.health_changed_after_death = global.health_changed_after_death or {}
 
     global.player_list = global.player_list or {}
     for tick = 0, divisor - 1 do
@@ -30,29 +45,29 @@ function on_init()
     global.running_speed_last = global.running_speed_last or {}
     global.running_speed_changed_after_death = global.running_speed_changed_after_death or {}
     global.running_speed_skip = global.running_speed_skip or {}
-
-    global.reach_current = global.reach_current or {}
-    global.reach_last = global.reach_last or {}
-    global.reach_changed_after_death = global.reach_changed_after_death or {}
-
-    global.crafting_speed_current = global.crafting_speed_current or {}
-    global.crafting_speed_last = global.crafting_speed_last or {}
-    global.crafting_speed_changed_after_death = global.crafting_speed_changed_after_death or {}
-
-    global.mining_speed_current = global.mining_speed_current or {}
-    global.mining_speed_last = global.mining_speed_last or {}
-    global.mining_speed_changed_after_death = global.mining_speed_changed_after_death or {}
-    global.mining_speed_last_mined = global.mining_speed_last_mined or {}
-
-    global.health_current = global.health_current or {}
-    global.health_last = global.health_last or {}
-    global.health_changed_after_death = global.health_changed_after_death or {}
 end
 
 function on_player_joined_game(event)
     local pi = event['player_index']
 
     set_default(global.warned, pi, false)
+
+    set_default(global.reach_current, pi, 0)
+    set_default(global.reach_last, pi, 0)
+    set_default(global.reach_changed_after_death, pi, true)
+
+    set_default(global.mining_speed_current, pi, 0)
+    set_default(global.mining_speed_last, pi, 0)
+    set_default(global.mining_speed_changed_after_death, pi, true)
+    set_default(global.mining_speed_last_mined, pi, 0)
+
+    set_default(global.crafting_speed_current, pi, 0)
+    set_default(global.crafting_speed_last, pi, 0)
+    set_default(global.crafting_speed_changed_after_death, pi, true)
+
+    set_default(global.health_current, pi, 0)
+    set_default(global.health_last, pi, 0)
+    set_default(global.health_changed_after_death, pi, 0)
 
     set_player_list(pi, true)
     local position = game.players[pi].position
@@ -62,23 +77,6 @@ function on_player_joined_game(event)
     set_default(global.running_speed_last, pi, 0)
     set_default(global.running_speed_changed_after_death, pi, true)
     set_default(global.running_speed_skip, pi, false)
-
-    set_default(global.reach_current, pi, 0)
-    set_default(global.reach_last, pi, 0)
-    set_default(global.reach_changed_after_death, pi, true)
-
-    set_default(global.crafting_speed_current, pi, 0)
-    set_default(global.crafting_speed_last, pi, 0)
-    set_default(global.crafting_speed_changed_after_death, pi, true)
-
-    set_default(global.mining_speed_current, pi, 0)
-    set_default(global.mining_speed_last, pi, 0)
-    set_default(global.mining_speed_changed_after_death, pi, true)
-    set_default(global.mining_speed_last_mined, pi, 0)
-
-    set_default(global.health_current, pi, 0)
-    set_default(global.health_last, pi, 0)
-    set_default(global.health_changed_after_death, pi, 0)
 end
 
 function on_player_left_game(event)
