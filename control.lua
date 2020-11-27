@@ -126,6 +126,7 @@ function increase_reach(pi, value)
 end
 
 function on_built_entity(event)
+    if settings.global["Personal_Development-disable"].value then return end
     local pi = event['player_index']
     local p = game.players[pi]
     if p.character == nil then return end
@@ -134,6 +135,7 @@ function on_built_entity(event)
 end
 
 function on_player_built_tile(event)
+    if settings.global["Personal_Development-disable"].value then return end
     local pi = event['player_index']
     local p = game.players[pi]
     if p.character == nil then return end
@@ -144,6 +146,7 @@ function on_player_built_tile(event)
 end
 
 function on_player_dropped_item(event)
+    if settings.global["Personal_Development-disable"].value then return end
     local pi = event['player_index']
     local p = game.players[pi]
     if p.character == nil then return end
@@ -174,6 +177,7 @@ function update_mining_speed(pi)
 end
 
 function on_player_mined_item(event)
+    if settings.global["Personal_Development-disable"].value then return end
     local pi = event['player_index']
     local p = game.players[pi]
     if p.character == nil then return end
@@ -212,6 +216,7 @@ function update_crafting_speed(pi)
 end
 
 function on_player_crafted_item(event)
+    if settings.global["Personal_Development-disable"].value then return end
     local pi = event['player_index']
     local p = game.players[pi]
 
@@ -245,6 +250,7 @@ function update_health(pi)
 end
 
 function on_entity_damaged(event)
+    if settings.global["Personal_Development-disable"].value then return end
     local p = event['entity']['player']
     if p.character == nil then return end
     local pi = p.index
@@ -307,8 +313,6 @@ function update_position(pi)
 end
 
 function on_tick(event)
-    local tickdiv = game.tick % divisor
-
     for pi, _ in pairs(global.players_waiting_for_update) do
         local p = game.players[pi]
         if p.character ~= nil then
@@ -321,12 +325,17 @@ function on_tick(event)
         end
     end
 
+    if settings.global["Personal_Development-disable"].value then return end
+
+    local tickdiv = game.tick % divisor
+
     for pi, _ in pairs(global.player_list[tickdiv]) do
         update_position(pi)
     end
 end
 
 function on_player_driving_changed_state(event)
+    if settings.global["Personal_Development-disable"].value then return end
     local pi = event['player_index']
     local p = game.players[pi]
     if p.vehicle == nil then
@@ -335,16 +344,19 @@ function on_player_driving_changed_state(event)
 end
 
 function on_player_toggled_map_editor(event)
+    if settings.global["Personal_Development-disable"].value then return end
     local pi = event['player_index']
     global.running_speed_skip[pi] = true
 end
 
 function on_player_changed_surface(event)
+    if settings.global["Personal_Development-disable"].value then return end
     local pi = event['player_index']
     global.running_speed_skip[pi] = true
 end
 
 function on_player_died(event)
+    if settings.global["Personal_Development-disable"].value then return end
     local pi = event['player_index']
     global.players_waiting_for_update[pi] = true
     global.running_speed_changed_after_death[pi] = false
@@ -356,6 +368,7 @@ end
 
 -- setting change --------------------------------------------------
 function on_runtime_mod_setting_changed(event)
+    if settings.global["Personal_Development-disable"].value then return end
     local setting_type = event['setting_type']
     local setting = event['setting']
 
@@ -375,7 +388,13 @@ function on_runtime_mod_setting_changed(event)
                 update_health(pi)
             end
         else
-            global.players_waiting_for_update[event['player_index']] = true
+            if setting == 'Personal_Development-limit-reach' or setting == 'Personal_Development-reach-limit'
+                    or setting == 'Personal_Development-limit-mining-speed' or setting == 'Personal_Development-mining-speed-limit'
+                    or setting == 'Personal_Development-limit-crafting-speed' or setting == 'Personal_Development-crafting-speed-limit'
+                    or setting == 'Personal_Development-limit-running-speed' or setting == 'Personal_Development-running-speed-limit'
+                    or setting == 'Personal_Development-limit-health' or setting == 'Personal_Development-health-limit' then
+                global.players_waiting_for_update[event['player_index']] = true
+            end
         end
     else -- runtime-global
         if setting == 'Personal_Development-global-limit-reach' or setting == 'Personal_Development-global-reach-limit' then
@@ -426,6 +445,84 @@ function on_runtime_mod_setting_changed(event)
         end
     end
 end
+
+-- commands --------------------------------------------------
+local shortname = 'PD_'
+local longname = 'Personal_Development_'
+function command_name(name)
+    local resname = shortname .. name
+    if commands.commands[resname] then
+        return longname .. name
+    end
+    return resname
+end
+
+function PD_stats(cmd)
+    local pi = cmd['player_index']
+    local p = game.players[pi]
+
+    local txt = 'Your bonuses due to the Personal Development mod:'
+
+    local rc = math.floor(global.reach_current[pi])
+    local rl = math.floor(global.reach_last[pi])
+    local reach = 'Reach: ' .. rc
+    if rl < rc then
+        reach = reach .. ' (limited to ' .. rl .. ')'
+    end
+
+    local mining = 'Mining speed: ' .. string.format('%.2f', global.mining_speed_current[pi] * 100) .. '%'
+    if global.mining_speed_last[pi] < global.mining_speed_current[pi] then
+        mining = mining .. ' (limited to ' .. string.format('%.2f', global.mining_speed_last[pi] * 100) .. '%)'
+    end
+
+    local crafting = 'Crafting speed: ' .. string.format('%.2f', global.crafting_speed_current[pi] * 100) .. '%'
+    if global.crafting_speed_last[pi] < global.crafting_speed_current[pi] then
+        crafting = crafting .. ' (limited to ' .. string.format('%.2f', global.crafting_speed_last[pi] * 100) .. '%)'
+    end
+
+    local health = 'Health speed: ' .. string.format('%.2f', global.health_current[pi])
+    if global.health_last[pi] < global.health_current[pi] then
+        health = health .. ' (limited to ' .. string.format('%.2f', global.health_last[pi]) .. ')'
+    end
+
+    local running = 'Running speed: ' .. string.format('%.2f', global.running_speed_current[pi] * 100) .. '%'
+    if global.running_speed_last[pi] < global.running_speed_current[pi] then
+        running = running .. ' (limited to ' .. string.format('%.2f', global.running_speed_last[pi] * 100) .. '%)'
+    end
+    p.print(txt .. '\n' .. reach .. '\n' .. mining .. '\n' .. crafting .. '\n' .. health .. '\n' .. running)
+end
+commands.add_command(command_name('stats'), 'Lists your stats increased by the Personal Development mod.', PD_stats)
+
+function PD_reset(cmd)
+    local pi = cmd['player_index']
+    local p = game.players[pi]
+
+    if not p.admin then
+        game.print('User ' .. p.name .. ' tried to reset Personal Development bonuses')
+        return
+    end
+
+    for pi, _ in pairs(game.players) do
+        local p = game.players[pi]
+        global.reach_current[pi] = 0
+        global.mining_speed_current[pi] = 0
+        global.crafting_speed_current[pi] = 0
+        global.health_current[pi] = 0
+        global.running_speed_current[pi] = 0
+        if p.character ~= nil then
+            update_reach(pi)
+            update_mining_speed(pi)
+            update_crafting_speed(pi)
+            update_running_speed(pi)
+            update_health(pi)
+        else
+            global.players_waiting_for_update[pi] = true
+        end
+    end
+
+    game.print('Personal Development has been reset')
+end
+commands.add_command(command_name('reset'), 'Resets the Personal Development mod. (admins only)', PD_reset)
 
 
 -- setup
