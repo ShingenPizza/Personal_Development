@@ -480,7 +480,7 @@ function PD_stats(cmd)
         crafting = crafting .. ' (limited to ' .. string.format('%.2f', global.crafting_speed_last[pi] * 100) .. '%)'
     end
 
-    local health = 'Health speed: ' .. string.format('%.2f', global.health_current[pi])
+    local health = 'Health: ' .. string.format('%.2f', global.health_current[pi])
     if global.health_last[pi] < global.health_current[pi] then
         health = health .. ' (limited to ' .. string.format('%.2f', global.health_last[pi]) .. ')'
     end
