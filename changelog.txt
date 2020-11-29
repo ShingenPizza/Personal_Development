@@ -8,9 +8,13 @@ Version: 1.0.1
 Date: 2020-11-23
   Other:
     - Factorio 1.1 version bump.
-
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.2
 Date: 2020-11-27
   Features:
     - Added commands to list and reset PD bonuses, as well as a setting to disable it.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.3
+Date: 2020-11-29
+  Fixes:
+    - Fixed a typo in the results of /PD_stats.
