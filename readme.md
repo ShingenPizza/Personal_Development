@@ -21,8 +21,8 @@ picking up items from the ground, and mining resources
 Each bonus increase value per unit* is configurable per-world.
 In case any of the bonuses starts being annoying, like walking too fast, you
 can limit them in per-player mod settings.
-An admin of a multiplayer server can further limit them for everyone too to
-prevent griefing over long distances or just as a matter of not making the mod
+An admin of a multiplayer server can further limit them for everyone too, to for example
+prevent griefing over long distances, or just as a matter of not making the mod
 too OP.\
 \*per action/time spent moving/each hp lost
 
@@ -35,16 +35,26 @@ finds an already declared /PD_* command.
 Simply disabling this mod in Factorio's main menu will not remove your gained
 bonuses.
 If you want to get rid of them, you will have to:
-1. disable the mod in mod settings,
-2. use the /PD_reset command,
-3. save the game,
-4. remove the mod from Factorio,
-5. start it again with the mod completely disabled,
-\* this may still not work for people currently editor mode etc.,
-or
-1. remove the mod from Factorio,
-2. play around with console commands or let/make all characters die.
 
+1. check the "Disable Personal Development" in PD mod settings ("Map" tab),
+2. use the /PD_reset command,
+3. save the game, exit to main menu,
+4. disable the mod in Factorio's mod manager, or delete it.
+
+(this may still not work for people currently in the editor/god mode etc.)
+
+or
+
+1. disable the mod in Factorio's mod manager, or delete it,
+2. back in the save file play around with console commands resetting everyone's bonuses, or let/make all characters die.
+
+##### KNOWN ISSUES:
+
+1. Creating a character with `/c game.player.create_character()` while in the god mode will not apply any bonuses to the new character.
+As a workaround you need to perform an action that will update each bonus first (or die and respawn).
+I couldn't find the event (if there's any) that fires when that happens - if anyone knows it, please let me know.
+
+##### FOOTNOTE:
 This is the first time I'm playing around with scripts running during gameplay,
 and while I tried to find various combinations of cases that could break,
 I'm quite sure this is not perfect, so sorry in advance for all the possible
