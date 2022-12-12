@@ -18,3 +18,10 @@ Version: 1.0.3
 Date: 2020-11-29
   Fixes:
     - Fixed a typo in the results of /PD_stats.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.4
+Date: 2022-12-12
+  Fixes:
+    - Fixed a crash when someone attempts to limit the health bonus.
+    - Fixed a crash when the damaged character has no player assigned.
+    - Actually added the 'Disable PD' locale that was missing from Factorio Mod Portal zips.
