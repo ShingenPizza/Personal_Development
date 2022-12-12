@@ -251,8 +251,10 @@ end
 
 function on_entity_damaged(event)
     if settings.global["Personal_Development-disable"].value then return end
-    local p = event['entity']['player']
-    if p.character == nil then return end
+    local e = event['entity']
+    if e == nil then return end
+    local p = e['player']
+    if p == nil or p.character == nil then return end
     local pi = p.index
 
     global.health_current[pi] = global.health_current[pi] + settings.global["Personal_Development-health-increase"].value * event['final_damage_amount']
