@@ -238,10 +238,10 @@ function update_health(pi)
     end
 
     local new_health = global.health_current[pi]
-    if p.mod_settings["Personal_Development-limit-health"].value and new_speed > p.mod_settings["Personal_Development-health-limit"].value then
+    if p.mod_settings["Personal_Development-limit-health"].value and new_health > p.mod_settings["Personal_Development-health-limit"].value then
         new_health = p.mod_settings["Personal_Development-health-limit"].value
     end
-    if settings.global["Personal_Development-global-limit-health"].value and new_speed > settings.global["Personal_Development-global-health-limit"].value then
+    if settings.global["Personal_Development-global-limit-health"].value and new_health > settings.global["Personal_Development-global-health-limit"].value then
         new_health = settings.global["Personal_Development-global-health-limit"].value
     end
     global.health_last[pi] = new_health
