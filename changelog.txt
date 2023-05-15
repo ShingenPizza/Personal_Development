@@ -25,3 +25,9 @@ Date: 2022-12-12
     - Fixed a crash when someone attempts to limit the health bonus.
     - Fixed a crash when the damaged character has no player assigned.
     - Actually added the 'Disable PD' locale that was missing from Factorio Mod Portal zips.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.5
+Date: 2023-05-15
+  Fixes:
+    - Fixed players not initializing their personal mod data, when mod was added to an ongoing game loaded in single player.
+    - Fixed player being initialized with incorrect position due to using cutscene camera position.
