@@ -45,11 +45,19 @@ function on_init()
     global.running_speed_last = global.running_speed_last or {}
     global.running_speed_changed_after_death = global.running_speed_changed_after_death or {}
     global.running_speed_skip = global.running_speed_skip or {}
+
+    -- initialize all players' values, in case this mod was added to an ongoing game loaded in single player
+    for pi, _ in pairs(game.players) do
+        init_player(pi)
+    end
 end
 
 function on_player_joined_game(event)
     local pi = event['player_index']
+    init_player(pi)
+end
 
+function init_player(pi)
     set_default(global.warned, pi, false)
 
     set_default(global.reach_current, pi, 0)
