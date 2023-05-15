@@ -78,9 +78,16 @@ function init_player(pi)
     set_default(global.health_changed_after_death, pi, 0)
 
     set_player_list(pi, true)
-    local position = game.players[pi].position
-    set_default(global.last_x, pi, position.x)
-    set_default(global.last_y, pi, position.y)
+    local p = game.players[pi]
+    local position = p.position
+    if p.character == nil then
+        set_default(global.last_x, pi, 0)
+        set_default(global.last_y, pi, 0)
+        global.running_speed_skip[pi] = true
+    else
+        set_default(global.last_x, pi, position.x)
+        set_default(global.last_y, pi, position.y)
+    end
     set_default(global.running_speed_current, pi, 0)
     set_default(global.running_speed_last, pi, 0)
     set_default(global.running_speed_changed_after_death, pi, true)
