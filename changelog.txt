@@ -31,3 +31,8 @@ Date: 2023-05-15
   Fixes:
     - Fixed players not initializing their personal mod data, when mod was added to an ongoing game loaded in single player.
     - Fixed player being initialized with incorrect position due to using cutscene camera position.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.6
+Date: 2023-06-04
+  Features:
+    - Added an admin-only command to set PD bonuses.
