@@ -519,6 +519,93 @@ function PD_reset(cmd)
 end
 commands.add_command(myutil.command_name('reset'), 'Resets the Personal Development mod. (admins only)', PD_reset)
 
+function PD_set(cmd)
+    local pi = cmd['player_index']
+    local p = game.players[pi]
+
+    if not p.admin then
+        game.print("User " .. p.name .. " tried to change Personal Development bonuses.")
+        return
+    end
+
+    local params = myutil.split_params(cmd['parameter'])
+
+    local params_len = 0
+    for i, v in ipairs(params) do
+        params_len = params_len + 1
+    end
+
+    local pi_to_mod = pi
+    local p_to_mod = p
+    if params_len == 2 then
+    elseif params_len == 3 then
+        local found = false
+        for i, v in pairs(game.players) do
+            if v.name == params[3] then
+                found = true
+                pi_to_mod = i
+                p_to_mod = v
+                break
+            end
+        end
+        if not found then
+            p.print("Could not find a player with given name.")
+            return
+        end
+    else
+        p.print("Invalid number of parameters. This command accepts 2 or 3 parameters.")
+        return
+    end
+
+    param2num, errmsg = myutil.parse_number(params[2])
+    if param2num == nil then
+        p.print("Error while parsing value: " .. errmsg)
+    end
+
+    if params[1] == 'reach' then
+        global.reach_current[pi_to_mod] = param2num
+        if p_to_mod.character ~= nil then
+            update_reach(pi_to_mod)
+        else
+            global.players_waiting_for_update[pi_to_mod] = true
+        end
+    elseif params[1] == 'mining_speed' then
+        global.mining_speed_current[pi_to_mod] = param2num
+        if p_to_mod.character ~= nil then
+            update_mining_speed(pi_to_mod)
+        else
+            global.players_waiting_for_update[pi_to_mod] = true
+        end
+    elseif params[1] == 'crafting_speed' then
+        global.crafting_speed_current[pi_to_mod] = param2num
+        if p_to_mod.character ~= nil then
+            update_crafting_speed(pi_to_mod)
+        else
+            global.players_waiting_for_update[pi_to_mod] = true
+        end
+    elseif params[1] == 'health' then
+        global.health_current[pi_to_mod] = param2num
+        if p_to_mod.character ~= nil then
+            update_health(pi_to_mod)
+        else
+            global.players_waiting_for_update[pi_to_mod] = true
+        end
+    elseif params[1] == 'running_speed' then
+        global.running_speed_current[pi_to_mod] = param2num
+        if p_to_mod.character ~= nil then
+            update_running_speed(pi_to_mod)
+        else
+            global.players_waiting_for_update[pi_to_mod] = true
+        end
+    else
+        p.print("invalid bonus type, must be one of: 'reach', 'mining_speed', 'crafting_speed', 'health', 'running_speed'.")
+        return
+    end
+
+    game.print("Personal Development's " .. params[1] .. " value of " .. p_to_mod.name .. " has been set to " .. params[2])
+end
+commands.add_command(myutil.command_name('set'), "Sets the Personal Development mod's values. (admin-only)", PD_set)
+
 
 -- setup
 script.on_init(on_init)
