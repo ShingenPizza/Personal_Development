@@ -1,17 +1,5 @@
 
-local divisor = 60
-
-function set_default(set, key, default)
-    if set[key] == nil then
-        set[key] = default
-    end
-end
-
-function set_player_list(pi, val)
-    local pidiv = pi % divisor
-    set_default(global.player_list, pidiv, {})
-    global.player_list[pidiv][pi] = val
-end
+local myutil = require('myutil')
 
 -- setup --------------------------------------------------
 function on_init()
@@ -36,7 +24,7 @@ function on_init()
     global.health_changed_after_death = global.health_changed_after_death or {}
 
     global.player_list = global.player_list or {}
-    for tick = 0, divisor - 1 do
+    for tick = 0, myutil.divisor - 1 do
         global.player_list[tick] = global.player_list[tick] or {}
     end
     global.last_x = global.last_x or {}
@@ -58,44 +46,44 @@ function on_player_joined_game(event)
 end
 
 function init_player(pi)
-    set_default(global.warned, pi, false)
+    myutil.set_default(global.warned, pi, false)
 
-    set_default(global.reach_current, pi, 0)
-    set_default(global.reach_last, pi, 0)
-    set_default(global.reach_changed_after_death, pi, true)
+    myutil.set_default(global.reach_current, pi, 0)
+    myutil.set_default(global.reach_last, pi, 0)
+    myutil.set_default(global.reach_changed_after_death, pi, true)
 
-    set_default(global.mining_speed_current, pi, 0)
-    set_default(global.mining_speed_last, pi, 0)
-    set_default(global.mining_speed_changed_after_death, pi, true)
-    set_default(global.mining_speed_last_mined, pi, 0)
+    myutil.set_default(global.mining_speed_current, pi, 0)
+    myutil.set_default(global.mining_speed_last, pi, 0)
+    myutil.set_default(global.mining_speed_changed_after_death, pi, true)
+    myutil.set_default(global.mining_speed_last_mined, pi, 0)
 
-    set_default(global.crafting_speed_current, pi, 0)
-    set_default(global.crafting_speed_last, pi, 0)
-    set_default(global.crafting_speed_changed_after_death, pi, true)
+    myutil.set_default(global.crafting_speed_current, pi, 0)
+    myutil.set_default(global.crafting_speed_last, pi, 0)
+    myutil.set_default(global.crafting_speed_changed_after_death, pi, true)
 
-    set_default(global.health_current, pi, 0)
-    set_default(global.health_last, pi, 0)
-    set_default(global.health_changed_after_death, pi, 0)
+    myutil.set_default(global.health_current, pi, 0)
+    myutil.set_default(global.health_last, pi, 0)
+    myutil.set_default(global.health_changed_after_death, pi, 0)
 
-    set_player_list(pi, true)
+    myutil.set_player_list(pi, true)
     local p = game.players[pi]
     local position = p.position
     if p.character == nil then
-        set_default(global.last_x, pi, 0)
-        set_default(global.last_y, pi, 0)
+        myutil.set_default(global.last_x, pi, 0)
+        myutil.set_default(global.last_y, pi, 0)
         global.running_speed_skip[pi] = true
     else
-        set_default(global.last_x, pi, position.x)
-        set_default(global.last_y, pi, position.y)
+        myutil.set_default(global.last_x, pi, position.x)
+        myutil.set_default(global.last_y, pi, position.y)
     end
-    set_default(global.running_speed_current, pi, 0)
-    set_default(global.running_speed_last, pi, 0)
-    set_default(global.running_speed_changed_after_death, pi, true)
-    set_default(global.running_speed_skip, pi, false)
+    myutil.set_default(global.running_speed_current, pi, 0)
+    myutil.set_default(global.running_speed_last, pi, 0)
+    myutil.set_default(global.running_speed_changed_after_death, pi, true)
+    myutil.set_default(global.running_speed_skip, pi, false)
 end
 
 function on_player_left_game(event)
-    set_player_list(event['player_index'], nil)
+    myutil.set_player_list(event['player_index'], nil)
 end
 
 -- reach --------------------------------------------------
@@ -344,7 +332,7 @@ function on_tick(event)
 
     if settings.global["Personal_Development-disable"].value then return end
 
-    local tickdiv = game.tick % divisor
+    local tickdiv = game.tick % myutil.divisor
 
     for pi, _ in pairs(global.player_list[tickdiv]) do
         update_position(pi)
@@ -464,16 +452,6 @@ function on_runtime_mod_setting_changed(event)
 end
 
 -- commands --------------------------------------------------
-local shortname = 'PD_'
-local longname = 'Personal_Development_'
-function command_name(name)
-    local resname = shortname .. name
-    if commands.commands[resname] then
-        return longname .. name
-    end
-    return resname
-end
-
 function PD_stats(cmd)
     local pi = cmd['player_index']
     local p = game.players[pi]
@@ -508,7 +486,7 @@ function PD_stats(cmd)
     end
     p.print(txt .. '\n' .. reach .. '\n' .. mining .. '\n' .. crafting .. '\n' .. health .. '\n' .. running)
 end
-commands.add_command(command_name('stats'), 'Lists your stats increased by the Personal Development mod.', PD_stats)
+commands.add_command(myutil.command_name('stats'), 'Lists your stats increased by the Personal Development mod.', PD_stats)
 
 function PD_reset(cmd)
     local pi = cmd['player_index']
@@ -539,7 +517,7 @@ function PD_reset(cmd)
 
     game.print('Personal Development has been reset')
 end
-commands.add_command(command_name('reset'), 'Resets the Personal Development mod. (admins only)', PD_reset)
+commands.add_command(myutil.command_name('reset'), 'Resets the Personal Development mod. (admins only)', PD_reset)
 
 
 -- setup
