@@ -37,7 +37,9 @@ Date: 2023-06-04
   Features:
     - Added an admin-only command to set PD bonuses.
 ---------------------------------------------------------------------------------------------------
-Version: ?
-Date: ?
+Version: 1.0.7
+Date: 2024-10-21
   Fixes:
     - Factorio 2.0 compatibility - renamed global to storage.
+  Other:
+    - Factorio 2.0 version bump.
