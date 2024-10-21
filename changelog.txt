@@ -36,3 +36,8 @@ Version: 1.0.6
 Date: 2023-06-04
   Features:
     - Added an admin-only command to set PD bonuses.
+---------------------------------------------------------------------------------------------------
+Version: ?
+Date: ?
+  Fixes:
+    - Factorio 2.0 compatibility - renamed global to storage.

@@ -3,36 +3,36 @@ local myutil = require('myutil')
 
 -- setup --------------------------------------------------
 function on_init()
-    global.warned = global.warned or {}
-    global.players_waiting_for_update = global.players_waiting_for_update or {}
+    storage.warned = storage.warned or {}
+    storage.players_waiting_for_update = storage.players_waiting_for_update or {}
 
-    global.reach_current = global.reach_current or {}
-    global.reach_last = global.reach_last or {}
-    global.reach_changed_after_death = global.reach_changed_after_death or {}
+    storage.reach_current = storage.reach_current or {}
+    storage.reach_last = storage.reach_last or {}
+    storage.reach_changed_after_death = storage.reach_changed_after_death or {}
 
-    global.mining_speed_current = global.mining_speed_current or {}
-    global.mining_speed_last = global.mining_speed_last or {}
-    global.mining_speed_changed_after_death = global.mining_speed_changed_after_death or {}
-    global.mining_speed_last_mined = global.mining_speed_last_mined or {}
+    storage.mining_speed_current = storage.mining_speed_current or {}
+    storage.mining_speed_last = storage.mining_speed_last or {}
+    storage.mining_speed_changed_after_death = storage.mining_speed_changed_after_death or {}
+    storage.mining_speed_last_mined = storage.mining_speed_last_mined or {}
 
-    global.crafting_speed_current = global.crafting_speed_current or {}
-    global.crafting_speed_last = global.crafting_speed_last or {}
-    global.crafting_speed_changed_after_death = global.crafting_speed_changed_after_death or {}
+    storage.crafting_speed_current = storage.crafting_speed_current or {}
+    storage.crafting_speed_last = storage.crafting_speed_last or {}
+    storage.crafting_speed_changed_after_death = storage.crafting_speed_changed_after_death or {}
 
-    global.health_current = global.health_current or {}
-    global.health_last = global.health_last or {}
-    global.health_changed_after_death = global.health_changed_after_death or {}
+    storage.health_current = storage.health_current or {}
+    storage.health_last = storage.health_last or {}
+    storage.health_changed_after_death = storage.health_changed_after_death or {}
 
-    global.player_list = global.player_list or {}
+    storage.player_list = storage.player_list or {}
     for tick = 0, myutil.divisor - 1 do
-        global.player_list[tick] = global.player_list[tick] or {}
+        storage.player_list[tick] = storage.player_list[tick] or {}
     end
-    global.last_x = global.last_x or {}
-    global.last_y = global.last_y or {}
-    global.running_speed_current = global.running_speed_current or {}
-    global.running_speed_last = global.running_speed_last or {}
-    global.running_speed_changed_after_death = global.running_speed_changed_after_death or {}
-    global.running_speed_skip = global.running_speed_skip or {}
+    storage.last_x = storage.last_x or {}
+    storage.last_y = storage.last_y or {}
+    storage.running_speed_current = storage.running_speed_current or {}
+    storage.running_speed_last = storage.running_speed_last or {}
+    storage.running_speed_changed_after_death = storage.running_speed_changed_after_death or {}
+    storage.running_speed_skip = storage.running_speed_skip or {}
 
     -- initialize all players' values, in case this mod was added to an ongoing game loaded in single player
     for pi, _ in pairs(game.players) do
@@ -46,40 +46,40 @@ function on_player_joined_game(event)
 end
 
 function init_player(pi)
-    myutil.set_default(global.warned, pi, false)
+    myutil.set_default(storage.warned, pi, false)
 
-    myutil.set_default(global.reach_current, pi, 0)
-    myutil.set_default(global.reach_last, pi, 0)
-    myutil.set_default(global.reach_changed_after_death, pi, true)
+    myutil.set_default(storage.reach_current, pi, 0)
+    myutil.set_default(storage.reach_last, pi, 0)
+    myutil.set_default(storage.reach_changed_after_death, pi, true)
 
-    myutil.set_default(global.mining_speed_current, pi, 0)
-    myutil.set_default(global.mining_speed_last, pi, 0)
-    myutil.set_default(global.mining_speed_changed_after_death, pi, true)
-    myutil.set_default(global.mining_speed_last_mined, pi, 0)
+    myutil.set_default(storage.mining_speed_current, pi, 0)
+    myutil.set_default(storage.mining_speed_last, pi, 0)
+    myutil.set_default(storage.mining_speed_changed_after_death, pi, true)
+    myutil.set_default(storage.mining_speed_last_mined, pi, 0)
 
-    myutil.set_default(global.crafting_speed_current, pi, 0)
-    myutil.set_default(global.crafting_speed_last, pi, 0)
-    myutil.set_default(global.crafting_speed_changed_after_death, pi, true)
+    myutil.set_default(storage.crafting_speed_current, pi, 0)
+    myutil.set_default(storage.crafting_speed_last, pi, 0)
+    myutil.set_default(storage.crafting_speed_changed_after_death, pi, true)
 
-    myutil.set_default(global.health_current, pi, 0)
-    myutil.set_default(global.health_last, pi, 0)
-    myutil.set_default(global.health_changed_after_death, pi, 0)
+    myutil.set_default(storage.health_current, pi, 0)
+    myutil.set_default(storage.health_last, pi, 0)
+    myutil.set_default(storage.health_changed_after_death, pi, 0)
 
     myutil.set_player_list(pi, true)
     local p = game.players[pi]
     local position = p.position
     if p.character == nil then
-        myutil.set_default(global.last_x, pi, 0)
-        myutil.set_default(global.last_y, pi, 0)
-        global.running_speed_skip[pi] = true
+        myutil.set_default(storage.last_x, pi, 0)
+        myutil.set_default(storage.last_y, pi, 0)
+        storage.running_speed_skip[pi] = true
     else
-        myutil.set_default(global.last_x, pi, position.x)
-        myutil.set_default(global.last_y, pi, position.y)
+        myutil.set_default(storage.last_x, pi, position.x)
+        myutil.set_default(storage.last_y, pi, position.y)
     end
-    myutil.set_default(global.running_speed_current, pi, 0)
-    myutil.set_default(global.running_speed_last, pi, 0)
-    myutil.set_default(global.running_speed_changed_after_death, pi, true)
-    myutil.set_default(global.running_speed_skip, pi, false)
+    myutil.set_default(storage.running_speed_current, pi, 0)
+    myutil.set_default(storage.running_speed_last, pi, 0)
+    myutil.set_default(storage.running_speed_changed_after_death, pi, true)
+    myutil.set_default(storage.running_speed_skip, pi, false)
 end
 
 function on_player_left_game(event)
@@ -90,16 +90,16 @@ end
 function update_reach(pi)
     local p = game.players[pi]
 
-    if global.reach_changed_after_death[pi] then
-        p.character_build_distance_bonus = math.max(p.character_build_distance_bonus - global.reach_last[pi], 0)
-        p.character_item_drop_distance_bonus = math.max(p.character_item_drop_distance_bonus - global.reach_last[pi], 0)
-        p.character_reach_distance_bonus = math.max(p.character_reach_distance_bonus - global.reach_last[pi], 0)
-        p.character_resource_reach_distance_bonus = math.max(p.character_resource_reach_distance_bonus - global.reach_last[pi], 0)
+    if storage.reach_changed_after_death[pi] then
+        p.character_build_distance_bonus = math.max(p.character_build_distance_bonus - storage.reach_last[pi], 0)
+        p.character_item_drop_distance_bonus = math.max(p.character_item_drop_distance_bonus - storage.reach_last[pi], 0)
+        p.character_reach_distance_bonus = math.max(p.character_reach_distance_bonus - storage.reach_last[pi], 0)
+        p.character_resource_reach_distance_bonus = math.max(p.character_resource_reach_distance_bonus - storage.reach_last[pi], 0)
     else
-        global.reach_changed_after_death[pi] = true
+        storage.reach_changed_after_death[pi] = true
     end
 
-    local new_reach = global.reach_current[pi]
+    local new_reach = storage.reach_current[pi]
     if p.mod_settings["Personal_Development-limit-reach"].value and new_reach > p.mod_settings["Personal_Development-reach-limit"].value then
         new_reach = p.mod_settings["Personal_Development-reach-limit"].value
     end
@@ -107,7 +107,7 @@ function update_reach(pi)
         new_reach = settings.global["Personal_Development-global-reach-limit"].value
     end
     new_reach = math.floor(new_reach)
-    global.reach_last[pi] = new_reach
+    storage.reach_last[pi] = new_reach
 
     p.character_build_distance_bonus = p.character_build_distance_bonus + new_reach
     p.character_item_drop_distance_bonus = p.character_item_drop_distance_bonus + new_reach
@@ -118,11 +118,11 @@ end
 function increase_reach(pi, value)
     local p = game.players[pi]
 
-    global.reach_current[pi] = global.reach_current[pi] + value
+    storage.reach_current[pi] = storage.reach_current[pi] + value
 
-    if not global.warned[pi] and global.reach_current[pi] > 5 then
+    if not storage.warned[pi] and storage.reach_current[pi] > 5 then
         p.print({'Personal_Development.warning'})
-        global.warned[pi] = true
+        storage.warned[pi] = true
     end
 
     update_reach(pi)
@@ -161,20 +161,20 @@ end
 function update_mining_speed(pi)
     local p = game.players[pi]
 
-    if global.mining_speed_changed_after_death[pi] then
-        p.character_mining_speed_modifier = math.max(p.character_mining_speed_modifier - global.mining_speed_last[pi], 0)
+    if storage.mining_speed_changed_after_death[pi] then
+        p.character_mining_speed_modifier = math.max(p.character_mining_speed_modifier - storage.mining_speed_last[pi], 0)
     else
-        global.mining_speed_changed_after_death[pi] = true
+        storage.mining_speed_changed_after_death[pi] = true
     end
 
-    local new_speed = global.mining_speed_current[pi]
+    local new_speed = storage.mining_speed_current[pi]
     if p.mod_settings["Personal_Development-limit-mining-speed"].value and new_speed > p.mod_settings["Personal_Development-mining-speed-limit"].value then
         new_speed = p.mod_settings["Personal_Development-mining-speed-limit"].value
     end
     if settings.global["Personal_Development-global-limit-mining-speed"].value and new_speed > settings.global["Personal_Development-global-mining-speed-limit"].value then
         new_speed = settings.global["Personal_Development-global-mining-speed-limit"].value
     end
-    global.mining_speed_last[pi] = new_speed
+    storage.mining_speed_last[pi] = new_speed
 
     p.character_mining_speed_modifier = p.character_mining_speed_modifier + new_speed
 end
@@ -185,35 +185,35 @@ function on_player_mined_item(event)
     local p = game.players[pi]
     if p.character == nil then return end
 
-    if game.tick == global.mining_speed_last_mined[pi] then return end
+    if game.tick == storage.mining_speed_last_mined[pi] then return end
 
     increase_reach(pi, settings.global["Personal_Development-reach-increase"].value)
 
-    global.mining_speed_current[pi] = global.mining_speed_current[pi] + settings.global["Personal_Development-mining-speed-increase"].value
+    storage.mining_speed_current[pi] = storage.mining_speed_current[pi] + settings.global["Personal_Development-mining-speed-increase"].value
 
     update_mining_speed(pi)
 
-    global.mining_speed_last_mined[pi] = game.tick
+    storage.mining_speed_last_mined[pi] = game.tick
 end
 
 -- crafting --------------------------------------------------
 function update_crafting_speed(pi)
     local p = game.players[pi]
 
-    if global.crafting_speed_changed_after_death[pi] then
-        p.character_crafting_speed_modifier = math.max(p.character_crafting_speed_modifier - global.crafting_speed_last[pi], 0)
+    if storage.crafting_speed_changed_after_death[pi] then
+        p.character_crafting_speed_modifier = math.max(p.character_crafting_speed_modifier - storage.crafting_speed_last[pi], 0)
     else
-        global.crafting_speed_changed_after_death[pi] = true
+        storage.crafting_speed_changed_after_death[pi] = true
     end
 
-    local new_speed = global.crafting_speed_current[pi]
+    local new_speed = storage.crafting_speed_current[pi]
     if p.mod_settings["Personal_Development-limit-crafting-speed"].value and new_speed > p.mod_settings["Personal_Development-crafting-speed-limit"].value then
         new_speed = p.mod_settings["Personal_Development-crafting-speed-limit"].value
     end
     if settings.global["Personal_Development-global-limit-crafting-speed"].value and new_speed > settings.global["Personal_Development-global-crafting-speed-limit"].value then
         new_speed = settings.global["Personal_Development-global-crafting-speed-limit"].value
     end
-    global.crafting_speed_last[pi] = new_speed
+    storage.crafting_speed_last[pi] = new_speed
 
     p.character_crafting_speed_modifier = p.character_crafting_speed_modifier + new_speed
 end
@@ -225,7 +225,7 @@ function on_player_crafted_item(event)
 
     if p.character == nil then return end
 
-    global.crafting_speed_current[pi] = global.crafting_speed_current[pi] + settings.global["Personal_Development-crafting-speed-increase"].value
+    storage.crafting_speed_current[pi] = storage.crafting_speed_current[pi] + settings.global["Personal_Development-crafting-speed-increase"].value
 
     update_crafting_speed(pi)
 end
@@ -234,20 +234,20 @@ end
 function update_health(pi)
     local p = game.players[pi]
 
-    if global.health_changed_after_death[pi] then
-        p.character_health_bonus = math.max(p.character_health_bonus - global.health_last[pi], 0)
+    if storage.health_changed_after_death[pi] then
+        p.character_health_bonus = math.max(p.character_health_bonus - storage.health_last[pi], 0)
     else
-        global.health_changed_after_death[pi] = true
+        storage.health_changed_after_death[pi] = true
     end
 
-    local new_health = global.health_current[pi]
+    local new_health = storage.health_current[pi]
     if p.mod_settings["Personal_Development-limit-health"].value and new_health > p.mod_settings["Personal_Development-health-limit"].value then
         new_health = p.mod_settings["Personal_Development-health-limit"].value
     end
     if settings.global["Personal_Development-global-limit-health"].value and new_health > settings.global["Personal_Development-global-health-limit"].value then
         new_health = settings.global["Personal_Development-global-health-limit"].value
     end
-    global.health_last[pi] = new_health
+    storage.health_last[pi] = new_health
 
     p.character_health_bonus = p.character_health_bonus + new_health
 end
@@ -260,7 +260,7 @@ function on_entity_damaged(event)
     if p == nil or p.character == nil then return end
     local pi = p.index
 
-    global.health_current[pi] = global.health_current[pi] + settings.global["Personal_Development-health-increase"].value * event['final_damage_amount']
+    storage.health_current[pi] = storage.health_current[pi] + settings.global["Personal_Development-health-increase"].value * event['final_damage_amount']
     update_health(pi)
 end
 
@@ -268,21 +268,21 @@ end
 function update_running_speed_inner(pi)
     local p = game.players[pi]
 
-    local new_speed = global.running_speed_current[pi]
+    local new_speed = storage.running_speed_current[pi]
     if p.mod_settings["Personal_Development-limit-running-speed"].value and new_speed > p.mod_settings["Personal_Development-running-speed-limit"].value then
         new_speed = p.mod_settings["Personal_Development-running-speed-limit"].value
     end
     if settings.global["Personal_Development-global-limit-running-speed"].value and new_speed > settings.global["Personal_Development-global-running-speed-limit"].value then
         new_speed = settings.global["Personal_Development-global-running-speed-limit"].value
     end
-    global.running_speed_last[pi] = new_speed
+    storage.running_speed_last[pi] = new_speed
 
     p.character_running_speed_modifier = p.character_running_speed_modifier + new_speed
 end
 
 function update_running_speed(pi)
     local p = game.players[pi]
-    p.character_running_speed_modifier = math.max(p.character_running_speed_modifier - global.running_speed_last[pi], 0)
+    p.character_running_speed_modifier = math.max(p.character_running_speed_modifier - storage.running_speed_last[pi], 0)
     update_running_speed_inner(pi)
 end
 
@@ -295,30 +295,30 @@ function update_position(pi)
     local y = pos.y
 
     if p.vehicle ~= nil then
-    elseif global.running_speed_skip[pi] then
-        global.running_speed_skip[pi] = false
-    elseif global.running_speed_changed_after_death[pi] then
-        local dx = x - global.last_x[pi]
-        local dy = y - global.last_y[pi]
+    elseif storage.running_speed_skip[pi] then
+        storage.running_speed_skip[pi] = false
+    elseif storage.running_speed_changed_after_death[pi] then
+        local dx = x - storage.last_x[pi]
+        local dy = y - storage.last_y[pi]
         if dx ~= 0 or dy ~= 0 then
             local value = settings.global["Personal_Development-running-speed-increase"].value * math.sqrt(dx * dx + dy * dy) / p.character_running_speed
-            global.running_speed_current[pi] = global.running_speed_current[pi] + value
-            if not global.warned[pi] and global.running_speed_current[pi] > 2 then
+            storage.running_speed_current[pi] = storage.running_speed_current[pi] + value
+            if not storage.warned[pi] and storage.running_speed_current[pi] > 2 then
                 p.print({'Personal_Development.warning'})
-                global.warned[pi] = true
+                storage.warned[pi] = true
             end
             update_running_speed(pi)
         end
     else
-        global.running_speed_changed_after_death[pi] = true
+        storage.running_speed_changed_after_death[pi] = true
         update_running_speed_inner(pi)
     end
-    global.last_x[pi] = x
-    global.last_y[pi] = y
+    storage.last_x[pi] = x
+    storage.last_y[pi] = y
 end
 
 function on_tick(event)
-    for pi, _ in pairs(global.players_waiting_for_update) do
+    for pi, _ in pairs(storage.players_waiting_for_update) do
         local p = game.players[pi]
         if p.character ~= nil then
             update_reach(pi)
@@ -326,7 +326,7 @@ function on_tick(event)
             update_crafting_speed(pi)
             update_health(pi)
             update_position(pi)
-            global.players_waiting_for_update[pi] = nil
+            storage.players_waiting_for_update[pi] = nil
         end
     end
 
@@ -334,7 +334,7 @@ function on_tick(event)
 
     local tickdiv = game.tick % myutil.divisor
 
-    for pi, _ in pairs(global.player_list[tickdiv]) do
+    for pi, _ in pairs(storage.player_list[tickdiv]) do
         update_position(pi)
     end
 end
@@ -344,31 +344,31 @@ function on_player_driving_changed_state(event)
     local pi = event['player_index']
     local p = game.players[pi]
     if p.vehicle == nil then
-        global.running_speed_skip[pi] = true
+        storage.running_speed_skip[pi] = true
     end
 end
 
 function on_player_toggled_map_editor(event)
     if settings.global["Personal_Development-disable"].value then return end
     local pi = event['player_index']
-    global.running_speed_skip[pi] = true
+    storage.running_speed_skip[pi] = true
 end
 
 function on_player_changed_surface(event)
     if settings.global["Personal_Development-disable"].value then return end
     local pi = event['player_index']
-    global.running_speed_skip[pi] = true
+    storage.running_speed_skip[pi] = true
 end
 
 function on_player_died(event)
     if settings.global["Personal_Development-disable"].value then return end
     local pi = event['player_index']
-    global.players_waiting_for_update[pi] = true
-    global.running_speed_changed_after_death[pi] = false
-    global.reach_changed_after_death[pi] = false
-    global.crafting_speed_changed_after_death[pi] = false
-    global.mining_speed_changed_after_death[pi] = false
-    global.health_changed_after_death[pi] = false
+    storage.players_waiting_for_update[pi] = true
+    storage.running_speed_changed_after_death[pi] = false
+    storage.reach_changed_after_death[pi] = false
+    storage.crafting_speed_changed_after_death[pi] = false
+    storage.mining_speed_changed_after_death[pi] = false
+    storage.health_changed_after_death[pi] = false
 end
 
 -- setting change --------------------------------------------------
@@ -398,7 +398,7 @@ function on_runtime_mod_setting_changed(event)
                     or setting == 'Personal_Development-limit-crafting-speed' or setting == 'Personal_Development-crafting-speed-limit'
                     or setting == 'Personal_Development-limit-running-speed' or setting == 'Personal_Development-running-speed-limit'
                     or setting == 'Personal_Development-limit-health' or setting == 'Personal_Development-health-limit' then
-                global.players_waiting_for_update[event['player_index']] = true
+                storage.players_waiting_for_update[event['player_index']] = true
             end
         end
     else -- runtime-global
@@ -408,7 +408,7 @@ function on_runtime_mod_setting_changed(event)
                 if p.character ~= nil then
                     update_reach(pi)
                 else
-                    global.players_waiting_for_update[pi] = true
+                    storage.players_waiting_for_update[pi] = true
                 end
             end
         elseif setting == 'Personal_Development-global-limit-mining-speed' or setting == 'Personal_Development-global-mining-speed-limit' then
@@ -417,7 +417,7 @@ function on_runtime_mod_setting_changed(event)
                 if p.character ~= nil then
                     update_mining_speed(pi)
                 else
-                    global.players_waiting_for_update[pi] = true
+                    storage.players_waiting_for_update[pi] = true
                 end
             end
         elseif setting == 'Personal_Development-global-limit-crafting-speed' or setting == 'Personal_Development-global-crafting-speed-limit' then
@@ -426,7 +426,7 @@ function on_runtime_mod_setting_changed(event)
                 if p.character ~= nil then
                     update_crafting_speed(pi)
                 else
-                    global.players_waiting_for_update[pi] = true
+                    storage.players_waiting_for_update[pi] = true
                 end
             end
         elseif setting == 'Personal_Development-global-limit-running-speed' or setting == 'Personal_Development-global-running-speed-limit' then
@@ -435,7 +435,7 @@ function on_runtime_mod_setting_changed(event)
                 if p.character ~= nil then
                     update_running_speed(pi)
                 else
-                    global.players_waiting_for_update[pi] = true
+                    storage.players_waiting_for_update[pi] = true
                 end
             end
         elseif setting == 'Personal_Development-global-limit-health' or setting == 'Personal_Development-global-health-limit' then
@@ -444,7 +444,7 @@ function on_runtime_mod_setting_changed(event)
                 if p.character ~= nil then
                     update_health(pi)
                 else
-                    global.players_waiting_for_update[pi] = true
+                    storage.players_waiting_for_update[pi] = true
                 end
             end
         end
@@ -458,31 +458,31 @@ function PD_stats(cmd)
 
     local txt = 'Your bonuses due to the Personal Development mod:'
 
-    local rc = math.floor(global.reach_current[pi])
-    local rl = math.floor(global.reach_last[pi])
+    local rc = math.floor(storage.reach_current[pi])
+    local rl = math.floor(storage.reach_last[pi])
     local reach = 'Reach: ' .. rc
     if rl < rc then
         reach = reach .. ' (limited to ' .. rl .. ')'
     end
 
-    local mining = 'Mining speed: ' .. string.format('%.2f', global.mining_speed_current[pi] * 100) .. '%'
-    if global.mining_speed_last[pi] < global.mining_speed_current[pi] then
-        mining = mining .. ' (limited to ' .. string.format('%.2f', global.mining_speed_last[pi] * 100) .. '%)'
+    local mining = 'Mining speed: ' .. string.format('%.2f', storage.mining_speed_current[pi] * 100) .. '%'
+    if storage.mining_speed_last[pi] < storage.mining_speed_current[pi] then
+        mining = mining .. ' (limited to ' .. string.format('%.2f', storage.mining_speed_last[pi] * 100) .. '%)'
     end
 
-    local crafting = 'Crafting speed: ' .. string.format('%.2f', global.crafting_speed_current[pi] * 100) .. '%'
-    if global.crafting_speed_last[pi] < global.crafting_speed_current[pi] then
-        crafting = crafting .. ' (limited to ' .. string.format('%.2f', global.crafting_speed_last[pi] * 100) .. '%)'
+    local crafting = 'Crafting speed: ' .. string.format('%.2f', storage.crafting_speed_current[pi] * 100) .. '%'
+    if storage.crafting_speed_last[pi] < storage.crafting_speed_current[pi] then
+        crafting = crafting .. ' (limited to ' .. string.format('%.2f', storage.crafting_speed_last[pi] * 100) .. '%)'
     end
 
-    local health = 'Health: ' .. string.format('%.2f', global.health_current[pi])
-    if global.health_last[pi] < global.health_current[pi] then
-        health = health .. ' (limited to ' .. string.format('%.2f', global.health_last[pi]) .. ')'
+    local health = 'Health: ' .. string.format('%.2f', storage.health_current[pi])
+    if storage.health_last[pi] < storage.health_current[pi] then
+        health = health .. ' (limited to ' .. string.format('%.2f', storage.health_last[pi]) .. ')'
     end
 
-    local running = 'Running speed: ' .. string.format('%.2f', global.running_speed_current[pi] * 100) .. '%'
-    if global.running_speed_last[pi] < global.running_speed_current[pi] then
-        running = running .. ' (limited to ' .. string.format('%.2f', global.running_speed_last[pi] * 100) .. '%)'
+    local running = 'Running speed: ' .. string.format('%.2f', storage.running_speed_current[pi] * 100) .. '%'
+    if storage.running_speed_last[pi] < storage.running_speed_current[pi] then
+        running = running .. ' (limited to ' .. string.format('%.2f', storage.running_speed_last[pi] * 100) .. '%)'
     end
     p.print(txt .. '\n' .. reach .. '\n' .. mining .. '\n' .. crafting .. '\n' .. health .. '\n' .. running)
 end
@@ -499,11 +499,11 @@ function PD_reset(cmd)
 
     for pi, _ in pairs(game.players) do
         local p = game.players[pi]
-        global.reach_current[pi] = 0
-        global.mining_speed_current[pi] = 0
-        global.crafting_speed_current[pi] = 0
-        global.health_current[pi] = 0
-        global.running_speed_current[pi] = 0
+        storage.reach_current[pi] = 0
+        storage.mining_speed_current[pi] = 0
+        storage.crafting_speed_current[pi] = 0
+        storage.health_current[pi] = 0
+        storage.running_speed_current[pi] = 0
         if p.character ~= nil then
             update_reach(pi)
             update_mining_speed(pi)
@@ -511,7 +511,7 @@ function PD_reset(cmd)
             update_running_speed(pi)
             update_health(pi)
         else
-            global.players_waiting_for_update[pi] = true
+            storage.players_waiting_for_update[pi] = true
         end
     end
 
@@ -563,39 +563,39 @@ function PD_set(cmd)
     end
 
     if params[1] == 'reach' then
-        global.reach_current[pi_to_mod] = param2num
+        storage.reach_current[pi_to_mod] = param2num
         if p_to_mod.character ~= nil then
             update_reach(pi_to_mod)
         else
-            global.players_waiting_for_update[pi_to_mod] = true
+            storage.players_waiting_for_update[pi_to_mod] = true
         end
     elseif params[1] == 'mining_speed' then
-        global.mining_speed_current[pi_to_mod] = param2num
+        storage.mining_speed_current[pi_to_mod] = param2num
         if p_to_mod.character ~= nil then
             update_mining_speed(pi_to_mod)
         else
-            global.players_waiting_for_update[pi_to_mod] = true
+            storage.players_waiting_for_update[pi_to_mod] = true
         end
     elseif params[1] == 'crafting_speed' then
-        global.crafting_speed_current[pi_to_mod] = param2num
+        storage.crafting_speed_current[pi_to_mod] = param2num
         if p_to_mod.character ~= nil then
             update_crafting_speed(pi_to_mod)
         else
-            global.players_waiting_for_update[pi_to_mod] = true
+            storage.players_waiting_for_update[pi_to_mod] = true
         end
     elseif params[1] == 'health' then
-        global.health_current[pi_to_mod] = param2num
+        storage.health_current[pi_to_mod] = param2num
         if p_to_mod.character ~= nil then
             update_health(pi_to_mod)
         else
-            global.players_waiting_for_update[pi_to_mod] = true
+            storage.players_waiting_for_update[pi_to_mod] = true
         end
     elseif params[1] == 'running_speed' then
-        global.running_speed_current[pi_to_mod] = param2num
+        storage.running_speed_current[pi_to_mod] = param2num
         if p_to_mod.character ~= nil then
             update_running_speed(pi_to_mod)
         else
-            global.players_waiting_for_update[pi_to_mod] = true
+            storage.players_waiting_for_update[pi_to_mod] = true
         end
     else
         p.print("invalid bonus type, must be one of: 'reach', 'mining_speed', 'crafting_speed', 'health', 'running_speed'.")

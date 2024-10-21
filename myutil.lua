@@ -13,8 +13,8 @@ end
 
 function myutil.set_player_list(pi, val)
     local pidiv = pi % myutil.divisor
-    myutil.set_default(global.player_list, pidiv, {})
-    global.player_list[pidiv][pi] = val
+    myutil.set_default(storage.player_list, pidiv, {})
+    storage.player_list[pidiv][pi] = val
 end
 
 -- for commands --------------------------------------------------
